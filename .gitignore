@@ -1,0 +1,21 @@
+# Entornos virtuales
+env/
+venv/
+*.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Datos pesados
+data/
+
+# Modelos entrenados
+models/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Sistema
+.DS_Store
+Thumbs.db
