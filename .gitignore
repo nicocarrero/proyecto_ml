@@ -8,7 +8,9 @@ __pycache__/
 *.pyc
 
 # Datos pesados
-data/
+data/**
+!data/**/
+!data/**/*.dvc
 
 # Modelos entrenados
 models/
