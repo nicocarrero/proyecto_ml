@@ -1,0 +1,5 @@
+outs:
+- md5: 7b98a75b35d4dd40ccb90d55ecc49da6
+  size: 8010
+  hash: md5
+  path: model_pipeline.joblib
