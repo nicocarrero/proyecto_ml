@@ -7,14 +7,18 @@ venv/
 __pycache__/
 *.pyc
 
-# Ignorar los archivos CSV (la data real)
-data/**/*.csv
+# Ignorar los archivos de datos reales
+data/raw/churn_sintetico.csv
+data/processed/data_final.csv
+models/model_pipeline.joblib
 
-# Pero NO ignorar los archivos de configuración de DVC
-!data/**/*.dvc
+# Ignorar el cache interno de DVC (IMPORTANTE)
+.dvc/cache
+.dvc/tmp
+.dvc/config.local
 
-# Modelos entrenados
-models/
+# Asegúrate de NO ignorar los archivos .dvc
+!*.dvc
 
 # Jupyter
 .ipynb_checkpoints/
