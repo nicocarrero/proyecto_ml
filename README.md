@@ -143,3 +143,16 @@ El detalle completo del análisis, decisiones de modelado, feature engineering y
 ```text
 reports/INFORME_TECNICO.md
 ```
+
+---
+
+## Notebook de Exploración
+
+Si deseas revisar el análisis exploratorio de datos (EDA), feature engineering, pruebas de modelos y experimentación realizada durante el desarrollo, puedes abrir el notebook:
+
+```text
+notebooks/notebook.ipynb
+```
+
+---
+
