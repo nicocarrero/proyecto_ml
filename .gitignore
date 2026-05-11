@@ -7,9 +7,10 @@ venv/
 __pycache__/
 *.pyc
 
-# Datos pesados
-data/**
-!data/**/
+# Ignorar los archivos CSV (la data real)
+data/**/*.csv
+
+# Pero NO ignorar los archivos de configuración de DVC
 !data/**/*.dvc
 
 # Modelos entrenados

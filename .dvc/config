@@ -1,2 +1,6 @@
+[core]
+    remote = origin
+[cache]
+    type = copy
 ['remote "origin"']
-    url = https://dagshub.com/carreronicoo/proyecto_ml.dvc.dvc
+    url = https://dagshub.com/carreronicoo/proyecto_ml.dvc

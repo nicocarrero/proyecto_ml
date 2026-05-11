@@ -25,8 +25,7 @@ def build_final_pipeline(preprocessor):
     """
     
     selector = SelectFromModel(
-LogisticRegression(penalty='l1', solver='liblinear', C=0.1, random_state=42) # C=0.1 numero razonable de features seleccionadas
-    )
+LogisticRegression(penalty='l1', solver='liblinear', C=0.1, random_state=42))
     
     classifier = LogisticRegression(
         penalty="l1", solver="saga", C=0.5,
