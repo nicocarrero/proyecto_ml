@@ -136,6 +136,21 @@ models/confusion_matrix.png
 
 ---
 
+## Diccionario de Features (Dataset Final)
+
+Para realizar inferencias con el modelo serializado (`models/model_pipeline.joblib`), el input debe respetar el siguiente esquema de variables generado luego del proceso de **Feature Engineering**.
+
+| Tipo | Variables | Descripción, categorías y rangos |
+|---|---|---|
+| **Originales** | `tenure_months`, `monthly_charge`, `late_payments`, `avg_monthly_usage_gb`, `contract_type`, `payment_method`, `internet_service`, `has_streaming`, `has_security_pack`, `num_products`, `region`, `customer_age`, `is_promo` | **Variables numéricas:** <br> • `tenure_months`: 1 - 72 <br> • `monthly_charge`: 15.0 - 127.17 <br> • `late_payments`: 0 - 5 <br> • `avg_monthly_usage_gb`: 5.0 - 324.4 <br> • `customer_age`: 18 - 80 <br><br> **Variables categóricas:** <br> • `contract_type`: `mensual`, `anual`, `bianual` <br> • `payment_method`: `credito`, `debito`, `efectivo`, `transferencia` <br> • `internet_service`: `fibra`, `cable`, `movil`, `ninguno` <br> • `region`: `norte`, `sur`, `centro`, `oeste` <br><br> **Variables binarias:** <br> • `has_streaming`: `(0, 1)` <br> • `has_security_pack`: `(0, 1)` <br> • `is_promo`: `(0, 1)` |
+| **Calculadas** | `total_charges_cat`, `tickets_grouped`, `riesgo_contrato`, `num_servicios`, `cliente_problematico`, `anchor_score` | Variables generadas durante el proceso de ingeniería de características. <br><br> • `total_charges_cat`: `Bajo`, `Medio-Bajo`, `Medio-Alto`, `Alto/VIP` <br> • `tickets_grouped`: 0 - 5 <br> • `riesgo_contrato`: 0.0 - 1.0 <br> • `num_servicios`: 0 - 2 <br> • `cliente_problematico`: `(0, 1)` <br> • `anchor_score`: 1 - 288 |
+
+> **Nota:**  
+> El modelo espera como entrada el dataset final luego del proceso de Feature Engineering.  
+> Algunas variables calculadas derivan de columnas originales que ya no existen en el dataset final, por lo que esta sección se incluye únicamente como referencia para pruebas e inferencias manuales.
+
+---
+
 ## Informe Técnico
 
 El detalle completo del análisis, decisiones de modelado, feature engineering y limitaciones se encuentra en:
