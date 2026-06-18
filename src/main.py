@@ -11,12 +11,13 @@ from src.feature_engineering import FeatureEngineeringTransformer
 from src.preprocessing import split_and_preprocess
 from src.train import build_final_pipeline, train_evaluate_save
 
+
 def main():
     print("- Iniciando pipeline de entrenamiento integral con FE acoplado...")
 
-    raw_path = 'data/raw/churn_sintetico.csv'
-    processed_path = 'data/processed/data_final.csv'
-    
+    raw_path = "data/raw/churn_sintetico.csv"
+    processed_path = "data/processed/data_final.csv"
+
     try:
         print(f"- Cargando datos crudos desde {raw_path}...")
         df_raw = pd.read_csv(raw_path)
@@ -32,7 +33,7 @@ def main():
     # --- PASO 3: Guardar evidencia de Feature Engineering (Opcional / Trazabilidad) ---
     print("- Guardando copia local de datos transformados para trazabilidad...")
     try:
-        os.makedirs('data/processed', exist_ok=True)
+        os.makedirs("data/processed", exist_ok=True)
         fe_visual = FeatureEngineeringTransformer()
         df_processed_visual = fe_visual.fit_transform(df_raw)
         df_processed_visual.to_csv(processed_path, index=False)
@@ -51,22 +52,28 @@ def main():
     # --- PASO 6: Generar evidencia gráfica ---
     print("- Generando evidencia gráfica...")
     plt.figure(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                xticklabels=['No Churn', 'Churn'],
-                yticklabels=['No Churn', 'Churn'])
-    plt.title('Matriz de Confusión - Modelo Final (Logistic Regression)')
-    plt.xlabel('Predicción')
-    plt.ylabel('Valor Real')
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=["No Churn", "Churn"],
+        yticklabels=["No Churn", "Churn"],
+    )
+    plt.title("Matriz de Confusión - Modelo Final (Logistic Regression)")
+    plt.xlabel("Predicción")
+    plt.ylabel("Valor Real")
     plt.tight_layout()
-    
-    os.makedirs('models', exist_ok=True)
-    plt.savefig('models/confusion_matrix.png', dpi=300)
+
+    os.makedirs("models", exist_ok=True)
+    plt.savefig("models/confusion_matrix.png", dpi=300)
     plt.close()
-    
-    print("\n" + "="*50)
+
+    print("\n" + "=" * 50)
     print("¡PIPELINE EJECUTADO EXITOSAMENTE!")
-    print("="*50)
+    print("=" * 50)
     print(f"Artefacto agnóstico y completo guardado en 'models/model_pipeline.joblib'")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

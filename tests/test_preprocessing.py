@@ -22,34 +22,40 @@ from sklearn.compose import ColumnTransformer
 from src.feature_engineering import FeatureEngineeringTransformer
 from src.preprocessing import get_preprocessor, split_and_preprocess, TARGET_COL
 
-
 # ---------------------------------------------------------------------------
 # Fixture compartido
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def df_raw():
     """Dataset sintético mínimo con todas las columnas crudas."""
     np.random.seed(42)
     n = 120
-    return pd.DataFrame({
-        "tenure_months":        np.random.randint(1, 73, n),
-        "monthly_charge":       np.random.uniform(15, 130, n),
-        "total_charges":        np.random.uniform(50, 9000, n),
-        "support_tickets":      np.random.randint(0, 9, n),
-        "late_payments":        np.random.randint(0, 6, n),
-        "avg_monthly_usage_gb": np.random.uniform(5, 300, n),
-        "contract_type":        np.random.choice(["mensual", "anual", "bianual"], n),
-        "payment_method":       np.random.choice(["transferencia", "debito", "efectivo", "credito"], n),
-        "internet_service":     np.random.choice(["cable", "fibra", "movil", "ninguno"], n),
-        "has_streaming":        np.random.randint(0, 2, n),
-        "has_security_pack":    np.random.randint(0, 2, n),
-        "num_products":         np.random.randint(1, 5, n),
-        "region":               np.random.choice(["centro", "norte", "oeste", "sur"], n),
-        "customer_age":         np.random.randint(18, 79, n),
-        "is_promo":             np.random.randint(0, 2, n),
-        "churn":                np.random.randint(0, 2, n),
-    })
+    return pd.DataFrame(
+        {
+            "tenure_months": np.random.randint(1, 73, n),
+            "monthly_charge": np.random.uniform(15, 130, n),
+            "total_charges": np.random.uniform(50, 9000, n),
+            "support_tickets": np.random.randint(0, 9, n),
+            "late_payments": np.random.randint(0, 6, n),
+            "avg_monthly_usage_gb": np.random.uniform(5, 300, n),
+            "contract_type": np.random.choice(["mensual", "anual", "bianual"], n),
+            "payment_method": np.random.choice(
+                ["transferencia", "debito", "efectivo", "credito"], n
+            ),
+            "internet_service": np.random.choice(
+                ["cable", "fibra", "movil", "ninguno"], n
+            ),
+            "has_streaming": np.random.randint(0, 2, n),
+            "has_security_pack": np.random.randint(0, 2, n),
+            "num_products": np.random.randint(1, 5, n),
+            "region": np.random.choice(["centro", "norte", "oeste", "sur"], n),
+            "customer_age": np.random.randint(18, 79, n),
+            "is_promo": np.random.randint(0, 2, n),
+            "churn": np.random.randint(0, 2, n),
+        }
+    )
 
 
 # ===========================================================================
@@ -88,16 +94,18 @@ class TestSinDataLeakage:
         transform sobre test con valores altos.
         Los cuartiles del train deben aplicarse al test, no recalcularse.
         """
-        df_train = pd.DataFrame({
-            "total_charges":   [100.0, 200.0, 300.0, 400.0],
-            "support_tickets": [0, 1, 2, 3],
-            "late_payments":   [0, 0, 1, 1],
-            "tenure_months":   [12, 24, 36, 48],
-            "contract_type":   ["mensual", "anual", "mensual", "bianual"],
-            "has_streaming":   [1, 0, 1, 0],
-            "has_security_pack": [0, 1, 0, 1],
-            "num_products":    [1, 2, 3, 4],
-        })
+        df_train = pd.DataFrame(
+            {
+                "total_charges": [100.0, 200.0, 300.0, 400.0],
+                "support_tickets": [0, 1, 2, 3],
+                "late_payments": [0, 0, 1, 1],
+                "tenure_months": [12, 24, 36, 48],
+                "contract_type": ["mensual", "anual", "mensual", "bianual"],
+                "has_streaming": [1, 0, 1, 0],
+                "has_security_pack": [0, 1, 0, 1],
+                "num_products": [1, 2, 3, 4],
+            }
+        )
         fe = FeatureEngineeringTransformer()
         fe.fit(df_train)
         q1_tras_fit = fe.q1
@@ -106,9 +114,9 @@ class TestSinDataLeakage:
         df_test["total_charges"] = [5000.0, 6000.0, 7000.0, 8000.0]
         fe.transform(df_test)
 
-        assert fe.q1 == q1_tras_fit, (
-            "q1 cambió al transformar test — los cuartiles se están recalculando en transform()."
-        )
+        assert (
+            fe.q1 == q1_tras_fit
+        ), "q1 cambió al transformar test — los cuartiles se están recalculando en transform()."
 
 
 # ===========================================================================
@@ -128,13 +136,17 @@ class TestFeatureEngineeringContrato:
         fe = FeatureEngineeringTransformer()
         result = fe.fit_transform(df_raw)
         features_requeridas = [
-            "total_charges_cat", "tickets_grouped", "riesgo_contrato",
-            "num_servicios", "cliente_problematico", "anchor_score"
+            "total_charges_cat",
+            "tickets_grouped",
+            "riesgo_contrato",
+            "num_servicios",
+            "cliente_problematico",
+            "anchor_score",
         ]
         for col in features_requeridas:
-            assert col in result.columns, (
-                f"Falta '{col}' — el preprocessor va a fallar al buscarla."
-            )
+            assert (
+                col in result.columns
+            ), f"Falta '{col}' — el preprocessor va a fallar al buscarla."
 
     def test_elimina_columnas_crudas(self, df_raw):
         """
@@ -197,9 +209,7 @@ class TestPreprocessorContrato:
 
     def test_binarias_son_passthrough(self):
         """Las columnas binarias no deben escalarse ni codificarse."""
-        bin_step = next(
-            t[1] for t in get_preprocessor().transformers if t[0] == "bin"
-        )
+        bin_step = next(t[1] for t in get_preprocessor().transformers if t[0] == "bin")
         assert bin_step == "passthrough"
 
     def test_instancias_independientes(self):
@@ -228,8 +238,7 @@ class TestSplitContrato:
         X_a, _, _, _, _ = split_and_preprocess(df_raw, random_state=42)
         X_b, _, _, _, _ = split_and_preprocess(df_raw, random_state=42)
         pd.testing.assert_frame_equal(
-            X_a.reset_index(drop=True),
-            X_b.reset_index(drop=True)
+            X_a.reset_index(drop=True), X_b.reset_index(drop=True)
         )
 
     def test_estratificacion_preserva_proporcion_de_churn(self, df_raw):

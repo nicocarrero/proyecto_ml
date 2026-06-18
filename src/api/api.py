@@ -21,14 +21,10 @@ from .schemas import (
     BatchPredictionResponse,
 )
 
-
-
 os.environ["MLFLOW_TRACKING_USERNAME"] = "carreronicoo"
 os.environ["MLFLOW_TRACKING_PASSWORD"] = "11c0bc53ab66e42295a8f9c55704bfec4c3580c0"
 
-mlflow.set_tracking_uri(
-    "https://dagshub.com/carreronicoo/proyecto_ml.mlflow"
-)
+mlflow.set_tracking_uri("https://dagshub.com/carreronicoo/proyecto_ml.mlflow")
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
@@ -44,9 +40,7 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 MODEL_URI = "models:/CustomerChurn/latest"
 try:
-    model = mlflow.sklearn.load_model(
-        MODEL_URI
-    )
+    model = mlflow.sklearn.load_model(MODEL_URI)
 
     print("[OK] Modelo cargado desde MLflow Registry")
 
@@ -58,10 +52,21 @@ except Exception as e:
 # Helpers
 # ---------------------------------------------------------------------------
 FEATURE_ORDER = [
-    "tenure_months", "monthly_charge", "total_charges", "support_tickets",
-    "late_payments", "avg_monthly_usage_gb", "contract_type", "payment_method",
-    "internet_service", "has_streaming", "has_security_pack", "num_products",
-    "region", "customer_age", "is_promo",
+    "tenure_months",
+    "monthly_charge",
+    "total_charges",
+    "support_tickets",
+    "late_payments",
+    "avg_monthly_usage_gb",
+    "contract_type",
+    "payment_method",
+    "internet_service",
+    "has_streaming",
+    "has_security_pack",
+    "num_products",
+    "region",
+    "customer_age",
+    "is_promo",
 ]
 
 

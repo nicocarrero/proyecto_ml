@@ -18,17 +18,17 @@ from unittest.mock import MagicMock, patch
 from fastapi.testclient import TestClient
 import numpy as np
 
-
 # ---------------------------------------------------------------------------
 # Fixture: cliente de prueba con modelo mockeado
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture(scope="module")
 def client():
     """
     Crea un TestClient con el modelo reemplazado por un mock que siempre
     predice churn=1 con probabilidad 0.85 (risk_level='alto').
-    
+
     Parchea tanto mlflow.sklearn.load_model como joblib.load ANTES de
     importar la app, para que funcione sin importar cómo cargue la API.
     """
@@ -37,10 +37,12 @@ def client():
     mock_model.predict_proba.return_value = np.array([[0.15, 0.85]])
 
     # Parchear ambas posibles fuentes de carga antes del import
-    with patch("mlflow.sklearn.load_model", return_value=mock_model), \
-         patch("joblib.load", return_value=mock_model):
-        
+    with patch("mlflow.sklearn.load_model", return_value=mock_model), patch(
+        "joblib.load", return_value=mock_model
+    ):
+
         from src.api.api import app
+
         app.state.model = mock_model  # por si la app guarda referencia en state
         with TestClient(app) as c:
             yield c
@@ -142,7 +144,9 @@ class TestPredictHappyPath:
         for service in ("cable", "fibra", "movil", "ninguno"):
             payload = {**valid_customer, "internet_service": service}
             response = client.post("/predict", json=payload)
-            assert response.status_code == 200, f"Falló con internet_service='{service}'"
+            assert (
+                response.status_code == 200
+            ), f"Falló con internet_service='{service}'"
 
     def test_predict_all_regions(self, client, valid_customer):
         for region in ("centro", "norte", "oeste", "sur"):
@@ -269,7 +273,9 @@ class TestPredictBatch:
         body = client.post("/predict/batch", json=payload).json()
         assert 0.0 <= body["churn_rate"] <= 1.0
 
-    def test_batch_churn_rate_equals_churn_count_over_total(self, client, valid_customer):
+    def test_batch_churn_rate_equals_churn_count_over_total(
+        self, client, valid_customer
+    ):
         payload = {"customers": [valid_customer] * 4}
         body = client.post("/predict/batch", json=payload).json()
         expected_rate = round(body["churn_count"] / body["total"], 4)
@@ -305,11 +311,21 @@ class TestSchema:
 
     def test_schema_has_all_expected_fields(self, client):
         expected_fields = {
-            "tenure_months", "monthly_charge", "total_charges",
-            "support_tickets", "late_payments", "avg_monthly_usage_gb",
-            "contract_type", "payment_method", "internet_service",
-            "has_streaming", "has_security_pack", "num_products",
-            "region", "customer_age", "is_promo",
+            "tenure_months",
+            "monthly_charge",
+            "total_charges",
+            "support_tickets",
+            "late_payments",
+            "avg_monthly_usage_gb",
+            "contract_type",
+            "payment_method",
+            "internet_service",
+            "has_streaming",
+            "has_security_pack",
+            "num_products",
+            "region",
+            "customer_age",
+            "is_promo",
         }
         properties = set(client.get("/schema").json()["properties"].keys())
         assert expected_fields == properties
@@ -326,9 +342,11 @@ class TestRiskLabel:
 
     @pytest.fixture(autouse=True)
     def import_risk_label(self):
-        with patch("mlflow.sklearn.load_model", return_value=MagicMock()), \
-             patch("joblib.load", return_value=MagicMock()):
+        with patch("mlflow.sklearn.load_model", return_value=MagicMock()), patch(
+            "joblib.load", return_value=MagicMock()
+        ):
             from src.api.api import risk_label
+
             self.risk_label = risk_label
 
     def test_probability_0_is_bajo(self):
@@ -368,17 +386,19 @@ class TestModelUnavailable:
 
     @pytest.fixture
     def client_no_model(self):
-        with patch("mlflow.sklearn.load_model", side_effect=Exception), \
-             patch("joblib.load", side_effect=FileNotFoundError):
-            
+        with patch("mlflow.sklearn.load_model", side_effect=Exception), patch(
+            "joblib.load", side_effect=FileNotFoundError
+        ):
+
             from src.api import api as api_module
+
             original_model = api_module.model
             api_module.model = None
             api_module.app.state.model = None
-            
+
             with TestClient(api_module.app) as c:
                 yield c
-            
+
             api_module.model = original_model
             api_module.app.state.model = original_model
 
@@ -386,7 +406,9 @@ class TestModelUnavailable:
         response = client_no_model.post("/predict", json=valid_customer)
         assert response.status_code == 503
 
-    def test_predict_batch_without_model_returns_503(self, client_no_model, valid_customer):
+    def test_predict_batch_without_model_returns_503(
+        self, client_no_model, valid_customer
+    ):
         payload = {"customers": [valid_customer]}
         response = client_no_model.post("/predict/batch", json=payload)
         assert response.status_code == 503

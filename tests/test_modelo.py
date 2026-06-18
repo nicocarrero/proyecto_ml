@@ -21,7 +21,8 @@ Ejecutar solo tests de pipeline (sin DagsHub):
 """
 
 from dotenv import load_dotenv
-load_dotenv() # Lee .env si existe, si no, sigue con las variables del sistema
+
+load_dotenv()  # Lee .env si existe, si no, sigue con las variables del sistema
 
 import os
 import pytest
@@ -29,13 +30,14 @@ import numpy as np
 import pandas as pd
 
 DAGSHUB_USER = "carreronicoo"
-DAGSHUB_URI  = f"https://dagshub.com/{DAGSHUB_USER}/proyecto_ml.mlflow"
-MODEL_NAME = os.getenv("MLFLOW_MODEL_NAME", "CustomerChurn") 
+DAGSHUB_URI = f"https://dagshub.com/{DAGSHUB_USER}/proyecto_ml.mlflow"
+MODEL_NAME = os.getenv("MLFLOW_MODEL_NAME", "CustomerChurn")
 MODEL_URI = f"models:/{MODEL_NAME}/latest"
 
 # ---------------------------------------------------------------------------
 # Fixture: carga el modelo desde DagsHub una sola vez por sesión
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture(scope="module")
 def modelo_registry():
@@ -64,29 +66,34 @@ def modelo_registry():
 # Fixtures: perfiles de negocio
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def perfil_churn_alto():
     """
     Cliente con alto riesgo de abandono:
     contrato mensual, 2 meses de tenure, 5 pagos tardíos, 7 tickets.
     """
-    return pd.DataFrame([{
-        "tenure_months": 2,
-        "monthly_charge": 120.0,
-        "total_charges": 240.0,
-        "support_tickets": 7,
-        "late_payments": 5,
-        "avg_monthly_usage_gb": 10.0,
-        "contract_type": "mensual",
-        "payment_method": "efectivo",
-        "internet_service": "movil",
-        "has_streaming": 0,
-        "has_security_pack": 0,
-        "num_products": 1,
-        "region": "sur",
-        "customer_age": 22,
-        "is_promo": 0,
-    }])
+    return pd.DataFrame(
+        [
+            {
+                "tenure_months": 2,
+                "monthly_charge": 120.0,
+                "total_charges": 240.0,
+                "support_tickets": 7,
+                "late_payments": 5,
+                "avg_monthly_usage_gb": 10.0,
+                "contract_type": "mensual",
+                "payment_method": "efectivo",
+                "internet_service": "movil",
+                "has_streaming": 0,
+                "has_security_pack": 0,
+                "num_products": 1,
+                "region": "sur",
+                "customer_age": 22,
+                "is_promo": 0,
+            }
+        ]
+    )
 
 
 @pytest.fixture
@@ -95,23 +102,27 @@ def perfil_churn_bajo():
     Cliente con bajo riesgo de abandono:
     contrato bianual, 60 meses de tenure, sin problemas, 4 productos.
     """
-    return pd.DataFrame([{
-        "tenure_months": 60,
-        "monthly_charge": 40.0,
-        "total_charges": 2400.0,
-        "support_tickets": 0,
-        "late_payments": 0,
-        "avg_monthly_usage_gb": 150.0,
-        "contract_type": "bianual",
-        "payment_method": "debito",
-        "internet_service": "fibra",
-        "has_streaming": 1,
-        "has_security_pack": 1,
-        "num_products": 4,
-        "region": "centro",
-        "customer_age": 45,
-        "is_promo": 1,
-    }])
+    return pd.DataFrame(
+        [
+            {
+                "tenure_months": 60,
+                "monthly_charge": 40.0,
+                "total_charges": 2400.0,
+                "support_tickets": 0,
+                "late_payments": 0,
+                "avg_monthly_usage_gb": 150.0,
+                "contract_type": "bianual",
+                "payment_method": "debito",
+                "internet_service": "fibra",
+                "has_streaming": 1,
+                "has_security_pack": 1,
+                "num_products": 4,
+                "region": "centro",
+                "customer_age": 45,
+                "is_promo": 1,
+            }
+        ]
+    )
 
 
 # ===========================================================================
@@ -182,16 +193,27 @@ class TestIntegridadDelModelo:
         Si hay desajuste entre schemas.py y el pipeline, falla aquí
         antes de que falle en producción.
         """
-        sample = pd.DataFrame([{
-            "tenure_months": 12,        "monthly_charge": 65.5,
-            "total_charges": 786.0,     "support_tickets": 1,
-            "late_payments": 0,         "avg_monthly_usage_gb": 95.3,
-            "contract_type": "anual",   "payment_method": "debito",
-            "internet_service": "fibra", "has_streaming": 1,
-            "has_security_pack": 0,     "num_products": 2,
-            "region": "centro",         "customer_age": 35,
-            "is_promo": 0,
-        }])
+        sample = pd.DataFrame(
+            [
+                {
+                    "tenure_months": 12,
+                    "monthly_charge": 65.5,
+                    "total_charges": 786.0,
+                    "support_tickets": 1,
+                    "late_payments": 0,
+                    "avg_monthly_usage_gb": 95.3,
+                    "contract_type": "anual",
+                    "payment_method": "debito",
+                    "internet_service": "fibra",
+                    "has_streaming": 1,
+                    "has_security_pack": 0,
+                    "num_products": 2,
+                    "region": "centro",
+                    "customer_age": 35,
+                    "is_promo": 0,
+                }
+            ]
+        )
         try:
             modelo_registry.predict(sample)
         except Exception as e:
@@ -210,10 +232,12 @@ class TestEstructuraPipeline:
     @pytest.fixture(scope="class")
     def preprocessor(self):
         from src.preprocessing import get_preprocessor
+
         return get_preprocessor()
 
     def test_tiene_al_menos_tres_pasos(self, preprocessor):
         from src.train import build_final_pipeline
+
         pipeline = build_final_pipeline(preprocessor)
         assert len(pipeline.steps) >= 3
 
@@ -224,6 +248,7 @@ class TestEstructuraPipeline:
         solo existen después de que el FE las crea.
         """
         from src.train import build_final_pipeline
+
         pipeline = build_final_pipeline(preprocessor)
         assert pipeline.steps[0][0] == "feature_engineering", (
             f"Primer paso es '{pipeline.steps[0][0]}', debería ser 'feature_engineering'. "
@@ -232,18 +257,21 @@ class TestEstructuraPipeline:
 
     def test_classifier_es_ultimo_paso(self, preprocessor):
         from src.train import build_final_pipeline
+
         pipeline = build_final_pipeline(preprocessor)
         assert pipeline.steps[-1][0] == "classifier"
 
     def test_clasificador_por_defecto_es_logistic_regression(self, preprocessor):
         from src.train import build_final_pipeline
         from sklearn.linear_model import LogisticRegression
+
         pipeline = build_final_pipeline(preprocessor)
         assert isinstance(pipeline.named_steps["classifier"], LogisticRegression)
 
     def test_clasificador_custom_se_inyecta_correctamente(self, preprocessor):
         from src.train import build_final_pipeline
         from sklearn.ensemble import RandomForestClassifier
+
         clf = RandomForestClassifier(n_estimators=5, random_state=0)
         pipeline = build_final_pipeline(preprocessor, classifier=clf)
         assert isinstance(pipeline.named_steps["classifier"], RandomForestClassifier)

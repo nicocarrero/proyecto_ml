@@ -22,7 +22,8 @@ st.set_page_config(
 # ═══════════════════════════════════════════════════════════
 #  ESTILOS CSS
 # ═══════════════════════════════════════════════════════════
-st.markdown("""
+st.markdown(
+    """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -144,7 +145,10 @@ div[data-testid="stButton"] > button:hover, div[data-testid="stFormSubmitButton"
 
 .err-box { background: #1a0a0a; border: 1px solid #4d1a1a; border-radius: 10px; padding: 1rem 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #f87171; margin-top: 1rem; }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
+
 
 # ═══════════════════════════════════════════════════════════
 #  API CHECK CACHEADO
@@ -157,12 +161,20 @@ def check_api_health():
     except Exception:
         return False, False
 
+
 api_ok, model_ok = check_api_health()
 
 dot_cls = "dot-ok" if (api_ok and model_ok) else ("dot-warn" if api_ok else "dot-err")
-api_txt = "API conectada · modelo cargado" if (api_ok and model_ok) else ("La API responde pero sin modelo" if api_ok else "Sin conexión · localhost:8000")
+api_txt = (
+    "API conectada · modelo cargado"
+    if (api_ok and model_ok)
+    else (
+        "La API responde pero sin modelo" if api_ok else "Sin conexión · localhost:8000"
+    )
+)
 
-st.markdown(f"""
+st.markdown(
+    f"""
 <div class="top-bar">
     <div class="top-bar-left">
         <div class="top-icon">📊</div>
@@ -176,13 +188,19 @@ st.markdown(f"""
         <span>{api_txt}</span>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 if not api_ok:
-    st.error("⚠️ No se puede conectar con la API. Ejecutá en tu consola: `uvicorn api:app --reload`")
+    st.error(
+        "⚠️ No se puede conectar con la API. Ejecutá en tu consola: `uvicorn api:app --reload`"
+    )
     st.stop()
 if not model_ok:
-    st.warning("⚠️ La API responde pero el modelo no está cargado. Verificá la ruta del archivo del modelo.")
+    st.warning(
+        "⚠️ La API responde pero el modelo no está cargado. Verificá la ruta del archivo del modelo."
+    )
     st.stop()
 
 
@@ -196,37 +214,90 @@ with st.form("churn_input_form", border=False):
     col1, col2, col3 = st.columns(3, gap="large")
 
     with col1:
-        st.markdown('<span class="panel-tag">Facturación</span>', unsafe_allow_html=True)
-        tenure_months        = st.number_input("Meses con el servicio (tenure_months)", min_value=0, max_value=72, value=12, step=1, help="Antigüedad del cliente en meses.")
-        monthly_charge       = st.number_input("Cargo mensual en USD (monthly_charge)", min_value=15.0, max_value=130.0, value=65.5, step=0.5)
-        total_charges        = st.number_input("Cargos totales acumulados (total_charges)", min_value=0.0, value=786.0, step=10.0, help="Suma de lo facturado. Debe ser coherente con los meses de antigüedad.")
-        avg_monthly_usage_gb = st.number_input("Uso mensual promedio en GB (avg_monthly_usage_gb)", min_value=0.0, value=95.3, step=1.0)
+        st.markdown(
+            '<span class="panel-tag">Facturación</span>', unsafe_allow_html=True
+        )
+        tenure_months = st.number_input(
+            "Meses con el servicio (tenure_months)",
+            min_value=0,
+            max_value=72,
+            value=12,
+            step=1,
+            help="Antigüedad del cliente en meses.",
+        )
+        monthly_charge = st.number_input(
+            "Cargo mensual en USD (monthly_charge)",
+            min_value=15.0,
+            max_value=130.0,
+            value=65.5,
+            step=0.5,
+        )
+        total_charges = st.number_input(
+            "Cargos totales acumulados (total_charges)",
+            min_value=0.0,
+            value=786.0,
+            step=10.0,
+            help="Suma de lo facturado. Debe ser coherente con los meses de antigüedad.",
+        )
+        avg_monthly_usage_gb = st.number_input(
+            "Uso mensual promedio en GB (avg_monthly_usage_gb)",
+            min_value=0.0,
+            value=95.3,
+            step=1.0,
+        )
 
     with col2:
-        st.markdown('<span class="panel-tag">Comportamiento</span>', unsafe_allow_html=True)
-        support_tickets = st.number_input("Tickets de soporte (support_tickets)", min_value=0, max_value=20, value=1)
-        late_payments   = st.number_input("Pagos tardíos (late_payments)", min_value=0, max_value=12, value=0, help="Atrasos en los últimos 12 meses.")
-        num_products    = st.number_input("Productos contratados (num_products)", min_value=1, max_value=5, value=2)
-        customer_age    = st.number_input("Edad del cliente (customer_age)", min_value=18, max_value=99, value=35)
+        st.markdown(
+            '<span class="panel-tag">Comportamiento</span>', unsafe_allow_html=True
+        )
+        support_tickets = st.number_input(
+            "Tickets de soporte (support_tickets)", min_value=0, max_value=20, value=1
+        )
+        late_payments = st.number_input(
+            "Pagos tardíos (late_payments)",
+            min_value=0,
+            max_value=12,
+            value=0,
+            help="Atrasos en los últimos 12 meses.",
+        )
+        num_products = st.number_input(
+            "Productos contratados (num_products)", min_value=1, max_value=5, value=2
+        )
+        customer_age = st.number_input(
+            "Edad del cliente (customer_age)", min_value=18, max_value=99, value=35
+        )
 
     with col3:
         st.markdown('<span class="panel-tag">Contrato</span>', unsafe_allow_html=True)
-        contract_type    = st.selectbox("Tipo de contrato (contract_type)", ["mensual", "anual", "bianual"])
-        payment_method   = st.selectbox("Método de pago (payment_method)",   ["transferencia", "debito", "efectivo", "credito"])
-        internet_service = st.selectbox("Servicio de internet (internet_service)",["cable", "fibra", "movil", "ninguno"])
-        region           = st.selectbox("Región (region)",           ["centro", "norte", "oeste", "sur"])
-        
+        contract_type = st.selectbox(
+            "Tipo de contrato (contract_type)", ["mensual", "anual", "bianual"]
+        )
+        payment_method = st.selectbox(
+            "Método de pago (payment_method)",
+            ["transferencia", "debito", "efectivo", "credito"],
+        )
+        internet_service = st.selectbox(
+            "Servicio de internet (internet_service)",
+            ["cable", "fibra", "movil", "ninguno"],
+        )
+        region = st.selectbox("Región (region)", ["centro", "norte", "oeste", "sur"])
+
         st.markdown("<br>", unsafe_allow_html=True)
         t1, t2, t3 = st.columns(3)
-        with t1: has_streaming     = st.toggle("Streaming (has_streaming)", value=False)
-        with t2: has_security_pack = st.toggle("Seguridad (has_security_pack)", value=False)
-        with t3: is_promo          = st.toggle("Promo (is_promo)",     value=False)
+        with t1:
+            has_streaming = st.toggle("Streaming (has_streaming)", value=False)
+        with t2:
+            has_security_pack = st.toggle("Seguridad (has_security_pack)", value=False)
+        with t3:
+            is_promo = st.toggle("Promo (is_promo)", value=False)
 
     st.markdown('<hr class="div-line">', unsafe_allow_html=True)
     _, btn_col, _ = st.columns([3, 2, 3])
     with btn_col:
         # st.form_submit_button hace de gatillo único
-        predict_btn = st.form_submit_button("Analizar cliente →", use_container_width=True)
+        predict_btn = st.form_submit_button(
+            "Analizar cliente →", use_container_width=True
+        )
 
 # ═══════════════════════════════════════════════════════════
 #  MANEJO DE ERRORES Y RESULTADO
@@ -235,73 +306,93 @@ if predict_btn:
     # 1. Validación de usuario simple antes de consultar API
     validation_errors = []
     if total_charges < monthly_charge and tenure_months > 0:
-         validation_errors.append("Los cargos totales no pueden ser menores al cargo mensual actual si el cliente tiene más de 0 meses.")
+        validation_errors.append(
+            "Los cargos totales no pueden ser menores al cargo mensual actual si el cliente tiene más de 0 meses."
+        )
     if tenure_months == 0 and total_charges > 0:
-         validation_errors.append("Un cliente nuevo (0 meses) no debería tener cargos acumulados.")
+        validation_errors.append(
+            "Un cliente nuevo (0 meses) no debería tener cargos acumulados."
+        )
 
     if validation_errors:
         for err in validation_errors:
             st.warning(f"⚠️ **Error de validación:** {err}")
-    
+
     # 2. Si no hay errores, se dispara la solicitud
     else:
         payload = {
-            "tenure_months":        tenure_months,
-            "monthly_charge":       monthly_charge,
-            "total_charges":        total_charges,
-            "support_tickets":      support_tickets,
-            "late_payments":        late_payments,
+            "tenure_months": tenure_months,
+            "monthly_charge": monthly_charge,
+            "total_charges": total_charges,
+            "support_tickets": support_tickets,
+            "late_payments": late_payments,
             "avg_monthly_usage_gb": avg_monthly_usage_gb,
-            "contract_type":        contract_type,
-            "payment_method":       payment_method,
-            "internet_service":     internet_service,
-            "has_streaming":        int(has_streaming),
-            "has_security_pack":    int(has_security_pack),
-            "num_products":         num_products,
-            "region":               region,
-            "customer_age":         customer_age,
-            "is_promo":             int(is_promo),
+            "contract_type": contract_type,
+            "payment_method": payment_method,
+            "internet_service": internet_service,
+            "has_streaming": int(has_streaming),
+            "has_security_pack": int(has_security_pack),
+            "num_products": num_products,
+            "region": region,
+            "customer_age": customer_age,
+            "is_promo": int(is_promo),
         }
 
         try:
             with st.spinner("Consultando modelo predictivo…"):
                 response = requests.post(f"{API_URL}/predict", json=payload, timeout=10)
-            
+
             response.raise_for_status()
             result = response.json()
 
             pred = result.get("churn_prediction", 0)
             prob = result.get("churn_probability", 0.0)
             risk = result.get("risk_level", "bajo")
-            pct  = round(prob * 100, 1)
+            pct = round(prob * 100, 1)
 
-            is_churn     = pred == 1
-            verdict_lbl  = "CHURN DETECTADO"  if is_churn else "CLIENTE ESTABLE"
-            verdict_cls  = "verdict-churn"    if is_churn else "verdict-retain"
-            mv_cls       = "mv-churn"         if is_churn else "mv-retain"
-            pred_txt     = "Abandono"         if is_churn else "Retención"
-            caption      = ("Alta probabilidad de abandono. Se recomienda acción inmediata."
-                            if is_churn else
-                            "Baja probabilidad de abandono. Perfil de retención saludable.")
+            is_churn = pred == 1
+            verdict_lbl = "CHURN DETECTADO" if is_churn else "CLIENTE ESTABLE"
+            verdict_cls = "verdict-churn" if is_churn else "verdict-retain"
+            mv_cls = "mv-churn" if is_churn else "mv-retain"
+            pred_txt = "Abandono" if is_churn else "Retención"
+            caption = (
+                "Alta probabilidad de abandono. Se recomienda acción inmediata."
+                if is_churn
+                else "Baja probabilidad de abandono. Perfil de retención saludable."
+            )
 
-            risk_label = {"alto": "Riesgo alto", "medio": "Riesgo medio", "bajo": "Riesgo bajo"}.get(risk, risk)
+            risk_label = {
+                "alto": "Riesgo alto",
+                "medio": "Riesgo medio",
+                "bajo": "Riesgo bajo",
+            }.get(risk, risk)
 
             recs = {
-                "alto":  ("🔴", "Acción urgente requerida",
-                          "Señales críticas de abandono. Contacto proactivo inmediato, "
-                          "oferta de retención personalizada y revisión de tickets pendientes."),
-                "medio": ("🟡", "Seguimiento activo recomendado",
-                          "Riesgo moderado. Evaluar descuento en próxima factura, upgrade de plan "
-                          "o revisión de soporte en los últimos 30 días."),
-                "bajo":  ("🟢", "Cliente en zona segura",
-                          "Perfil estable. Mantener comunicación periódica y aprovechar "
-                          "para ofrecer productos complementarios."),
+                "alto": (
+                    "🔴",
+                    "Acción urgente requerida",
+                    "Señales críticas de abandono. Contacto proactivo inmediato, "
+                    "oferta de retención personalizada y revisión de tickets pendientes.",
+                ),
+                "medio": (
+                    "🟡",
+                    "Seguimiento activo recomendado",
+                    "Riesgo moderado. Evaluar descuento en próxima factura, upgrade de plan "
+                    "o revisión de soporte en los últimos 30 días.",
+                ),
+                "bajo": (
+                    "🟢",
+                    "Cliente en zona segura",
+                    "Perfil estable. Mantener comunicación periódica y aprovechar "
+                    "para ofrecer productos complementarios.",
+                ),
             }
             icon_r, title_r, text_r = recs.get(risk, recs["bajo"])
             now_str = datetime.datetime.now().strftime("%d/%m/%Y  %H:%M")
 
             # Muestra del panel de resultados
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <div class="res-frame">
               <div class="res-topbar">
                 <span>◈ resultado del análisis</span>
@@ -345,11 +436,17 @@ if predict_btn:
                 </div>
               </div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         except requests.exceptions.HTTPError as he:
-            st.error(f"🛑 **Error en la API (HTTP {response.status_code}):** {response.text}")
+            st.error(
+                f"🛑 **Error en la API (HTTP {response.status_code}):** {response.text}"
+            )
         except requests.exceptions.ConnectionError:
-            st.error("🛑 **Error de conexión:** No se pudo establecer conexión con la API en el puerto 8000.")
+            st.error(
+                "🛑 **Error de conexión:** No se pudo establecer conexión con la API en el puerto 8000."
+            )
         except Exception as e:
             st.error(f"🛑 **Error inesperado:** {str(e)}")
