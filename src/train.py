@@ -1,18 +1,13 @@
 # src/train.py
 import json
-import joblib
 import os
-from sklearn.pipeline import Pipeline
+
+import joblib
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-    roc_auc_score,
-    confusion_matrix,
-    classification_report,
-)
+from sklearn.metrics import (accuracy_score, classification_report,
+                             confusion_matrix, f1_score, precision_score,
+                             recall_score, roc_auc_score)
+from sklearn.pipeline import Pipeline
 
 # Importamos el nuevo Transformer
 from src.feature_engineering import FeatureEngineeringTransformer

@@ -6,20 +6,17 @@ API de inferencia de churn. Carga model_pipeline.joblib y expone
 endpoints de prediccion usando los esquemas definidos en schemas.py.
 """
 
-from fastapi import FastAPI, HTTPException
-import joblib
-import pandas as pd
 import os
-import mlflow
 import sys
 from pathlib import Path
 
-from .schemas import (
-    CustomerFeatures,
-    BatchRequest,
-    PredictionResponse,
-    BatchPredictionResponse,
-)
+import joblib
+import mlflow
+import pandas as pd
+from fastapi import FastAPI, HTTPException
+
+from .schemas import (BatchPredictionResponse, BatchRequest, CustomerFeatures,
+                      PredictionResponse)
 
 os.environ["MLFLOW_TRACKING_USERNAME"] = "carreronicoo"
 os.environ["MLFLOW_TRACKING_PASSWORD"] = "11c0bc53ab66e42295a8f9c55704bfec4c3580c0"

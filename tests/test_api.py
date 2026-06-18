@@ -13,10 +13,11 @@ Ejecutar con:
     pytest tests/test_api.py -v
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
-from fastapi.testclient import TestClient
+
 import numpy as np
+import pytest
+from fastapi.testclient import TestClient
 
 # ---------------------------------------------------------------------------
 # Fixture: cliente de prueba con modelo mockeado

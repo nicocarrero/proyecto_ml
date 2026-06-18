@@ -25,9 +25,10 @@ from dotenv import load_dotenv
 load_dotenv()  # Lee .env si existe, si no, sigue con las variables del sistema
 
 import os
-import pytest
+
 import numpy as np
 import pandas as pd
+import pytest
 
 DAGSHUB_USER = "carreronicoo"
 DAGSHUB_URI = f"https://dagshub.com/{DAGSHUB_USER}/proyecto_ml.mlflow"
@@ -262,15 +263,17 @@ class TestEstructuraPipeline:
         assert pipeline.steps[-1][0] == "classifier"
 
     def test_clasificador_por_defecto_es_logistic_regression(self, preprocessor):
-        from src.train import build_final_pipeline
         from sklearn.linear_model import LogisticRegression
+
+        from src.train import build_final_pipeline
 
         pipeline = build_final_pipeline(preprocessor)
         assert isinstance(pipeline.named_steps["classifier"], LogisticRegression)
 
     def test_clasificador_custom_se_inyecta_correctamente(self, preprocessor):
-        from src.train import build_final_pipeline
         from sklearn.ensemble import RandomForestClassifier
+
+        from src.train import build_final_pipeline
 
         clf = RandomForestClassifier(n_estimators=5, random_state=0)
         pipeline = build_final_pipeline(preprocessor, classifier=clf)

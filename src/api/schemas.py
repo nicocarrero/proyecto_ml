@@ -4,8 +4,9 @@ schemas.py
 Esquemas Pydantic para la API de predicción de churn
 """
 
+from typing import List, Literal
+
 from pydantic import BaseModel, Field
-from typing import Literal, List
 
 
 # ---------------------------------------------------------------------------

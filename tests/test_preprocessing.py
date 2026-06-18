@@ -14,13 +14,14 @@ Ejecutar con:
     pytest tests/test_preprocessing.py -v
 """
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 from sklearn.compose import ColumnTransformer
 
 from src.feature_engineering import FeatureEngineeringTransformer
-from src.preprocessing import get_preprocessor, split_and_preprocess, TARGET_COL
+from src.preprocessing import (TARGET_COL, get_preprocessor,
+                               split_and_preprocess)
 
 # ---------------------------------------------------------------------------
 # Fixture compartido
