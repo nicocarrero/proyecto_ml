@@ -2,9 +2,7 @@
 import json
 import joblib
 import os
-import numpy as np
 from sklearn.pipeline import Pipeline
-from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
