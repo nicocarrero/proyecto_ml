@@ -72,7 +72,7 @@ def main():
     print("\n" + "=" * 50)
     print("¡PIPELINE EJECUTADO EXITOSAMENTE!")
     print("=" * 50)
-    print(f"Artefacto agnóstico y completo guardado en 'models/model_pipeline.joblib'")
+    print("Artefacto agnóstico y completo guardado en 'models/model_pipeline.joblib'")
 
 
 if __name__ == "__main__":
