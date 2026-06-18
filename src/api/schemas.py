@@ -1,7 +1,7 @@
 """
 schemas.py
 ----------
-Esquemas Pydantic para la API de predicción de churn.
+Esquemas Pydantic para la API de predicción de churn
 """
 
 from typing import List, Literal
