@@ -15,8 +15,12 @@ import mlflow
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 
-from .schemas import (BatchPredictionResponse, BatchRequest, CustomerFeatures,
-                      PredictionResponse)
+from .schemas import (
+    BatchPredictionResponse,
+    BatchRequest,
+    CustomerFeatures,
+    PredictionResponse,
+)
 
 os.environ["MLFLOW_TRACKING_USERNAME"] = "carreronicoo"
 os.environ["MLFLOW_TRACKING_PASSWORD"] = "11c0bc53ab66e42295a8f9c55704bfec4c3580c0"

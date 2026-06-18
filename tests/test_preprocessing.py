@@ -20,8 +20,7 @@ import pytest
 from sklearn.compose import ColumnTransformer
 
 from src.feature_engineering import FeatureEngineeringTransformer
-from src.preprocessing import (TARGET_COL, get_preprocessor,
-                               split_and_preprocess)
+from src.preprocessing import TARGET_COL, get_preprocessor, split_and_preprocess
 
 # ---------------------------------------------------------------------------
 # Fixture compartido
