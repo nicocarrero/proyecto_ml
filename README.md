@@ -1,126 +1,336 @@
 # proyecto_ml
 
-Modelo de clasificación binaria para predecir la cancelación voluntaria de clientes (churn) en AndesLink Servicios Digitales S.A.
+Predicción de abandono de clientes (*Customer Churn*) para **AndesLink Servicios Digitales S.A.**
+
+Proyecto académico de MLOps desarrollado para la materia **Laboratorio de Minería de Datos (ISTEA)**.
+
+La solución implementa un flujo completo de Machine Learning que incluye:
+
+* Preparación e ingeniería de datos.
+* Entrenamiento y evaluación de modelos.
+* Tracking de experimentos con MLflow.
+* Versionado de datos y modelos con DVC.
+* API de inferencia con FastAPI.
+* Interfaz gráfica con Streamlit.
+* Contenedorización con Docker.
+* Orquestación con Docker Compose.
+* Pruebas automatizadas con Pytest.
 
 ---
 
-## Estructura del proyecto
+# Objetivo de negocio
+
+AndesLink Servicios Digitales S.A. busca anticipar la cancelación voluntaria de clientes para activar campañas de retención y reducir la pérdida de ingresos recurrentes.
+
+El problema se modela como una tarea de clasificación binaria:
+
+* `0` → Cliente permanece.
+* `1` → Cliente abandona el servicio (*churn*).
+
+---
+
+# Arquitectura de la solución
+
+```text
+Usuario
+   │
+   ▼
+┌──────────────┐
+│  Streamlit   │
+└──────┬───────┘
+       │ HTTP
+       ▼
+┌──────────────┐
+│   FastAPI    │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Modelo ML    │
+│ Joblib       │
+└──────────────┘
+
+MLflow → Tracking de experimentos
+
+DVC → Versionado de datos y modelos
+```
+
+---
+
+# Estructura del proyecto
 
 ```text
 proyecto_ml/
-├── README.md                 
+│
 ├── data/
-│   ├── raw/                  # Datos originales
-│   └── processed/            # Datos procesados
-├── models/                   # Modelos, métricas y visualizaciones
+│   ├── raw/
+│   └── processed/
+│
+├── models/
+│   ├── model_pipeline.joblib
+│   ├── metrics.json
+│   └── confusion_matrix.png
+│
 ├── notebooks/
-│   └── notebook.ipynb        # EDA y experimentación
+│   └── notebook.ipynb
+│
 ├── reports/
 │   └── INFORME_TECNICO.md
+│
 ├── src/
-│   ├── preprocessing.py      # Limpieza y transformación de datos
+│   ├── preprocessing.py
 │   ├── feature_engineering.py
-│   ├── train.py              # Entrenamiento del modelo
-│   └── main.py               # Pipeline principal
-└── environment.yml           # Dependencias del entorno
+│   ├── train.py
+│   ├── main.py
+│   │
+│   ├── api/
+│   │   ├── api.py
+│   │   └── schemas.py
+│   │
+│   └── gui/
+│       └── app.py
+│
+├── tracking/
+│   └── experiments.py
+│
+├── tests/
+│   ├── test_api.py
+│   ├── test_modelo.py
+│   └── test_preprocessing.py
+│
+├── Dockerfile
+├── Dockerfile.streamlit
+├── docker-compose.yml
+├── environment.yml
+├── requirements-api.txt
+├── requirements-streamlit.txt
+└── README.md
 ```
 
 ---
 
-## Requisitos
+# Tecnologías utilizadas
 
-* Conda
-
-Todas las dependencias necesarias se encuentran definidas en:
-
-```text
-environment.yml
-```
+| Herramienta | Uso |
+|-------------|-----|
+| Python | Desarrollo principal |
+| Pandas | Procesamiento de datos |
+| Scikit-Learn | Entrenamiento y evaluación |
+| Logistic Regression | Experimentación |
+| RandomForest | Experimentación |
+| XGBoost | Experimentación |
+| MLflow | Tracking de experimentos |
+| DVC | Versionado de datos y modelos |
+| FastAPI | API de inferencia |
+| Streamlit | Interfaz gráfica |
+| Docker | Contenedorización |
+| Docker Compose | Orquestación |
+| Pytest | Testing |
 
 ---
 
-## Instalación
+# Instalación
 
-### 1. Clonar el repositorio
+## 1. Clonar el repositorio
 
 ```bash
-git clone https://dagshub.com/carreronicoo/proyecto_ml.git <nombre_directorio>
-cd <nombre_directorio>
-git pull origin main
+git clone https://github.com/nicocarrero/proyecto_ml.git
+cd proyecto_ml
 ```
 
-Reemplazar `<nombre_directorio>` por el nombre que desees para la carpeta local del proyecto.
-
----
-
-### 2. Crear el entorno
+## 2. Crear entorno
 
 ```bash
 conda env create -f environment.yml
 conda activate proyecto_ml
 ```
 
----
-
-### 3. Configurar acceso a DVC Remote
+## 3. Configurar acceso a DVC
 
 ```bash
 dvc remote modify origin --local auth basic
-dvc remote modify origin --local user carreronicoo
-dvc remote modify origin --local password 11c0bc53ab66e42295a8f9c55704bfec4c3580c0
+
+dvc remote modify origin --local user TU_USUARIO_DAGSHUB
+
+dvc remote modify origin --local password TU_TOKEN_DAGSHUB
 ```
 
----
-
-### 4. Descargar datos y artefactos
+## 4. Descargar datos y artefactos
 
 ```bash
 dvc pull
 ```
 
-Esto descarga:
+Se descargarán automáticamente:
 
-* `data/raw/churn_sintetico.csv`
-* `data/processed/data_final.csv`
-* `models/model_pipeline.joblib`
+```text
+data/raw/churn_sintetico.csv
+data/processed/data_final.csv
+models/model_pipeline.joblib
+```
 
 ---
 
-## Ejecución del Pipeline
+# Despliegue con Docker Compose
 
-Para ejecutar todo el flujo completo de procesamiento y entrenamiento:
+La forma recomendada de ejecutar la solución es mediante Docker Compose.
+
+## Levantar todos los servicios
+
+```bash
+docker compose up --build
+```
+
+## Detener servicios
+
+```bash
+docker compose down
+```
+
+## Servicios disponibles
+
+| Servicio    | URL                        |
+| ----------- | -------------------------- |
+| API FastAPI | http://localhost:8000      |
+| Swagger UI  | http://localhost:8000/docs |
+| Streamlit   | http://localhost:8501      |
+
+---
+
+# Ejecución local (opcional)
+
+Para desarrollo o debugging.
+
+## API
+
+```bash
+uvicorn src.api.api:app --reload
+```
+
+Disponible en:
+
+```text
+http://localhost:8000
+```
+
+Documentación:
+
+```text
+http://localhost:8000/docs
+```
+
+## Streamlit
+
+```bash
+streamlit run src/gui/app.py
+```
+
+Disponible en:
+
+```text
+http://localhost:8501
+```
+
+---
+
+# API de inferencia
+
+## Endpoint principal
+
+### POST /predict
+
+Ejemplo de respuesta:
+
+```json
+{
+  "prediction": 1,
+  "probability": 0.82
+}
+```
+
+---
+
+# Tracking de experimentos con MLflow
+
+Para visualizar los experimentos:
+
+```bash
+mlflow ui
+```
+
+Acceder desde:
+
+```text
+http://localhost:5000
+```
+
+MLflow registra:
+
+* Parámetros de entrenamiento.
+* Métricas.
+* Artefactos.
+* Comparación de modelos.
+
+---
+
+# Testing
+
+Ejecutar todas las pruebas:
+
+```bash
+pytest -v
+```
+
+Cobertura actual:
+
+* API.
+* Modelo.
+* Preprocesamiento.
+
+---
+
+# Entrenamiento
+
+Para ejecutar nuevamente el pipeline completo:
 
 ```bash
 python src/main.py
 ```
 
-El pipeline realiza automáticamente:
+El flujo realiza:
 
-1. Preprocesamiento de datos
-2. Feature Engineering
-3. Entrenamiento del modelo
-4. Evaluación
-5. Generación de métricas y artefactos
+1. Preprocesamiento.
+2. Feature Engineering.
+3. Entrenamiento.
+4. Evaluación.
+5. Serialización del modelo.
+6. Generación de métricas.
 
 ---
 
-## Modelo Final
+# Modelo seleccionado
 
-El modelo seleccionado fue:
+Durante la etapa de experimentación se evaluaron:
 
 * Logistic Regression
-* Regularización L1
-* Ajuste de `class_weight`
+* Random Forest
+* XGBoost
+
+El modelo final seleccionado fue:
+
+**Logistic Regression Tuned**
+
+La elección se basó en su equilibrio entre capacidad predictiva, interpretabilidad y simplicidad operativa.
 
 ---
 
-## Resultados
+# Resultados
 
-| Métrica           | Valor  |
-| ----------------- | ------ |
-| Precision (Churn) | 0.61   |
-| Recall (Churn)    | 0.70   |
-| ROC-AUC           | 0.7981 |
+| Métrica   | Valor  |
+| --------- | ------ |
+| Precision | 0.60   |
+| Recall    | 0.69   |
+| ROC-AUC   | 0.7982 |
 
 Las métricas completas se encuentran en:
 
@@ -128,7 +338,7 @@ Las métricas completas se encuentran en:
 models/metrics.json
 ```
 
-La matriz de confusión se encuentra en:
+La matriz de confusión final se encuentra en:
 
 ```text
 models/confusion_matrix.png
@@ -136,37 +346,54 @@ models/confusion_matrix.png
 
 ---
 
-## Diccionario de Features (Dataset Final)
+# Artefactos generados
 
-Para realizar inferencias con el modelo serializado (`models/model_pipeline.joblib`), el input debe respetar el siguiente esquema de variables generado luego del proceso de **Feature Engineering**.
-
-| Tipo | Variables | Descripción, categorías y rangos |
-|---|---|---|
-| **Originales** | `tenure_months`, `monthly_charge`, `late_payments`, `avg_monthly_usage_gb`, `contract_type`, `payment_method`, `internet_service`, `has_streaming`, `has_security_pack`, `num_products`, `region`, `customer_age`, `is_promo` | **Variables numéricas:** <br> • `tenure_months`: 1 - 72 <br> • `monthly_charge`: 15.0 - 127.17 <br> • `late_payments`: 0 - 5 <br> • `avg_monthly_usage_gb`: 5.0 - 324.4 <br> • `customer_age`: 18 - 80 <br><br> **Variables categóricas:** <br> • `contract_type`: `mensual`, `anual`, `bianual` <br> • `payment_method`: `credito`, `debito`, `efectivo`, `transferencia` <br> • `internet_service`: `fibra`, `cable`, `movil`, `ninguno` <br> • `region`: `norte`, `sur`, `centro`, `oeste` <br><br> **Variables binarias:** <br> • `has_streaming`: `(0, 1)` <br> • `has_security_pack`: `(0, 1)` <br> • `is_promo`: `(0, 1)` |
-| **Calculadas** | `total_charges_cat`, `tickets_grouped`, `riesgo_contrato`, `num_servicios`, `cliente_problematico`, `anchor_score` | Variables generadas durante el proceso de ingeniería de características. <br><br> • `total_charges_cat`: `Bajo`, `Medio-Bajo`, `Medio-Alto`, `Alto/VIP` <br> • `tickets_grouped`: 0 - 5 <br> • `riesgo_contrato`: 0.0 - 1.0 <br> • `num_servicios`: 0 - 2 <br> • `cliente_problematico`: `(0, 1)` <br> • `anchor_score`: 1 - 288 |
-
-> **Nota:**  
-> El modelo espera como entrada el dataset final luego del proceso de Feature Engineering.  
-> Algunas variables calculadas derivan de columnas originales que ya no existen en el dataset final, por lo que esta sección se incluye únicamente como referencia para pruebas e inferencias manuales.
+```text
+models/
+├── model_pipeline.joblib
+├── metrics.json
+└── confusion_matrix.png
+```
 
 ---
 
-## Informe Técnico
+# Informe técnico
 
-El detalle completo del análisis, decisiones de modelado, feature engineering y limitaciones se encuentra en:
+La documentación técnica completa puede consultarse en:
 
 ```text
 reports/INFORME_TECNICO.md
 ```
 
+Incluye:
+
+* Análisis exploratorio.
+* Ingeniería de características.
+* Comparación de modelos.
+* Ajuste de hiperparámetros.
+* Resultados.
+* Limitaciones y conclusiones.
+
 ---
 
-## Notebook de Exploración
-
-Si deseas revisar el análisis exploratorio de datos (EDA), feature engineering, pruebas de modelos y experimentación realizada durante el desarrollo, puedes abrir el notebook:
+# Notebook de exploración
 
 ```text
 notebooks/notebook.ipynb
 ```
 
 ---
+
+# Próximos pasos
+
+Para la entrega final se incorporará:
+
+* Prometheus.
+* Grafana.
+* Evidently AI.
+* Monitoreo de drift.
+* Observabilidad del modelo.
+* Dashboards operativos.
+
+```
+```
