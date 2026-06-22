@@ -409,7 +409,7 @@ Para la entrega final se incorporará:
 
 ## API FastAPI
 
-![Swagger](reports/swagger.jpg)
+![Swagger](reports/Swagger.jpg)
 
 ## MLflow
 
