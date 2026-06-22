@@ -395,5 +395,28 @@ Para la entrega final se incorporará:
 * Observabilidad del modelo.
 * Dashboards operativos.
 
+---
+
+# Evidencias de Funcionamiento
+
+## Docker Compose
+
+![Docker Compose](reports/docker_logs.jpg)
+
+## Interfaz Gráfica (Streamlit)
+
+![GUI Streamlit](reports/gui.jpg)
+
+## API FastAPI
+
+![Swagger](reports/swagger.jpg)
+
+## MLflow
+
+![MLflow](reports/mlflow.jpg)
+
+## Testing Automatizado
+
+![Pytest](reports/test.jpg)
 ```
 ```
