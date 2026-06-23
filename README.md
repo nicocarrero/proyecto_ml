@@ -134,8 +134,9 @@ proyecto_ml/
 ## 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/nicocarrero/proyecto_ml.git
-cd proyecto_ml
+git clone https://dagshub.com/carreronicoo/proyecto_ml.git <nombre_directorio>
+cd <nombre_directorio>
+git pull origin main
 ```
 
 ## 2. Crear entorno
